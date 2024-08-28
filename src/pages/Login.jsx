@@ -3,17 +3,20 @@ import { account } from '../appwrite/config';
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { login as authLogin } from '../feature/authSlice';
+import { toast } from "react-toastify";
 
 const Login = () => {
+    const { isLogedIn, status } = useSelector((state) => state.auth)
     const navigate = useNavigate()
-    // State hooks for form fields
+    const dispatch = useDispatch()
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState('');
-    const [logoutBtn, setshowLogoutBtn] = useState(false)
-    const [loginBtn, setshowLoginBtn] = useState(true)
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
+    const [loginBtnText, setLoginBtnText] = useState("Login")
 
     // Handler functions for input changes
     const handleEmailChange = (e) => setEmail(e.target.value);
@@ -21,7 +24,7 @@ const Login = () => {
     const toggleShowPassword = () => setShowPassword(!showPassword);
 
 
-    
+
     // Form submission handler
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -35,15 +38,14 @@ const Login = () => {
             setLoading(true)
             const response = await account.createEmailPasswordSession(email, password);
             console.log(response)
-            
+            dispatch(authLogin())
             setLoading(false)
-            setTimeout(()=>{
+            setLoginBtnText("Logged In")
+            toast.success("Login successfully")
+            setTimeout(() => {
                 navigate('/dashboard')
-            },[3000])
-            if (response) {
-                setshowLogoutBtn(true)
-                setshowLoginBtn(false)
-            }
+            }, [2000])
+
         } catch (error) {
             console.log("Login Failed", error.message);
             setMessage(error.message)
@@ -53,22 +55,11 @@ const Login = () => {
         }
     }
 
-    const handleLogout = async () => {
-        try {
-            await account.deleteSession('current');
-            console.log('User logged out successfully');
-            setshowLogoutBtn(false)
-            setshowLoginBtn(true)
-            // Redirect to login page or home page after logout
-            // window.location.href = '/login'; // Example redirect to login page
-        } catch (error) {
-            console.error('Logout failed:', error.message);
-        }
-    };
+
 
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gray-300 flex items-center justify-center">
             <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
                 <p className='text-red-600'>{message}</p>
@@ -81,7 +72,7 @@ const Login = () => {
                         <input
                             type="email"
                             id="email"
-                            
+
                             placeholder="Enter your email"
                             value={email}
                             onChange={handleEmailChange}
@@ -114,22 +105,20 @@ const Login = () => {
                             </button>
 
                         </div>
+                        <p className="text-xs text-red-500 mt-1 capitalize">
+                            Password should be at least 8 characters <br /> (number and charcter mixed).
+                        </p>
                     </div>
 
                     {/* Submit Button */}
                     <div className="flex items-center justify-between">
-                        {loginBtn && <button
+                        <button
                             type="submit"
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            {loading ? 'wait..' : 'login'}
-                        </button>}
-                        {logoutBtn && <button
-                            onClick={handleLogout}
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Logout
-                        </button>}
+                            {loading ? 'Please wait..' : `${loginBtnText} `}
+                        </button>
+
                     </div>
                 </form>
             </div>

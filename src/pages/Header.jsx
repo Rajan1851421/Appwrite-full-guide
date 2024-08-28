@@ -2,21 +2,26 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { account } from '../appwrite/config'
 import { AiOutlineLogout } from "react-icons/ai";
+import { useDispatch, useSelector } from 'react-redux'
+import { logout as authLogout } from '../feature/authSlice'
+import { toast } from "react-toastify";
 
 function Navbar() {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [islogedIn, setIsLogedIn] = useState(false)
+    const [islogedIn, setIsLogedIn] = useState(true)
+    const { IsloggedIn, status,session } = useSelector((state) => state.auth)
 
     useEffect(() => {
-        isLogedIn()
+        isLogedInFun()
     }, [])
 
-    const isLogedIn = async () => {
+    const isLogedInFun = async () => {
         try {
             const islogin = await account.get('current')
             console.log("Login", islogin);
             if (islogin) {
-                setIsLogedIn(true)
+                dispatch(session())
             }
 
         } catch (error) {
@@ -28,11 +33,10 @@ function Navbar() {
         try {
             await account.deleteSession('current');
             console.log('User logged out successfully');
+            dispatch(authLogout())
+            toast.error("Logout Successfully")
             navigate("/login")
-            setshowLogoutBtn(false)
-            setshowLoginBtn(true)
-            // Redirect to login page or home page after logout
-            // window.location.href = '/login'; // Example redirect to login page
+
         } catch (error) {
             console.error('Logout failed:', error.message);
         }
@@ -57,21 +61,25 @@ function Navbar() {
                             <li>
                                 <Link to="/" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500 dark:bg-blue-600 md:dark:bg-transparent" aria-current="page">Home</Link>
                             </li>
-
-
-
                             <li>
                                 <Link to="/register" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Signup</Link>
                             </li>
                             <li>
-                                {islogedIn && <Link to="/dashboard" class="block py-2  px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Dashboard</Link>}
+                                { IsloggedIn && <Link to="/dashboard" class="block py-2  px-3 text-gray-900 rounded hover:bg-gray-100
+                                 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
+                                  md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white 
+                                  md:dark:hover:bg-transparent">Dashboard</Link>
+                                }
                             </li>
-                            <li>
-                                {islogedIn ? <button onClick={handleLogout} class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            {IsloggedIn ? <li>
+                                <button onClick={handleLogout} class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                                     <AiOutlineLogout onClick={handleLogout} className='mt-1' />
-                                </button> :
-                                    <Link to="/login" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</Link>}
+                                </button>
                             </li>
+                            :
+                            <li>
+                                <Link to="/login" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</Link>
+                            </li>}
 
                         </ul>
                     </div>

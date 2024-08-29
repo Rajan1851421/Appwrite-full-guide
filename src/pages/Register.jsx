@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import { toast } from "react-toastify";
 import { account } from '../appwrite/config'; // Make sure this import path is correct
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   // State hooks for form fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   // Handler functions for input changes
   const handleNameChange = (e) => setName(e.target.value);
@@ -21,11 +25,23 @@ const Register = () => {
 
   const register = async () => {
     try {
+      setLoading(true)
       // Correcting the unique ID usage
       const response = await account.create('unique()', email, password, name);
-      console.log(response);
+      // console.log(response);
+      if (response) {
+        setLoading(false)
+        toast.success("Register Successfully ")
+        setName('')
+        setEmail("")
+        setPassword("")
+        setTimeout(() => {
+          navigate("/login")
+        }, [2000])
+      }
     } catch (error) {
       console.error("Account creation failed:", error.message);
+      toast.error("Registration Failed")
     }
   };
 
@@ -88,7 +104,7 @@ const Register = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Register
+              {loading ? 'Please wait..' : "Register"}
             </button>
           </div>
         </form>

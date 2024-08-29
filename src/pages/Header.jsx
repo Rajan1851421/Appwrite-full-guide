@@ -8,8 +8,7 @@ import { toast } from "react-toastify";
 
 function Navbar() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [islogedIn, setIsLogedIn] = useState(true)
+    const navigate = useNavigate()    
     const { IsloggedIn, status,session } = useSelector((state) => state.auth)
 
     useEffect(() => {
@@ -44,7 +43,7 @@ function Navbar() {
     return (
         <>
 
-            <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+            <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 sticky top-0 left-0 z-50 ">
                 <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <Link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                         <img src="https://avatars.githubusercontent.com/u/105105537?v=4" class="h-10 rounded-full" alt="Flowbite Logo" />
@@ -65,14 +64,24 @@ function Navbar() {
                                 <Link to="/register" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Signup</Link>
                             </li>
                             <li>
+                                <Link to="/addblog" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent
+                                 md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 
+                                 dark:hover:text-white md:dark:hover:bg-transparent">Post Blog</Link>
+                            </li>
+                            <li>
                                 { IsloggedIn && <Link to="/dashboard" class="block py-2  px-3 text-gray-900 rounded hover:bg-gray-100
                                  md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
                                   md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white 
                                   md:dark:hover:bg-transparent">Dashboard</Link>
                                 }
                             </li>
+                            {/* <li>
+                            <button onClick={handleLogout} class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                                    <AiOutlineLogout onClick={handleLogout} className='mt-1' />
+                                </button>
+                            </li> */}
                             {IsloggedIn ? <li>
-                                <button onClick={handleLogout} class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                                <button onClick={handleLogout} class="block py-2 px-3 text-red-800 font-extrabold rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0  md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
                                     <AiOutlineLogout onClick={handleLogout} className='mt-1' />
                                 </button>
                             </li>

@@ -4,6 +4,7 @@ const initialState = {
   IsloggedIn: false,
   status: "",
   session: null,
+  imageAll:[]
 };
 
 export const authSlice = createSlice({
@@ -23,10 +24,13 @@ export const authSlice = createSlice({
     session: (state) => {
       state.session = 1;
     },
+    GetimageAll:(state,action)=>{
+      state.imageAll = action.payload
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout, session } = authSlice.actions;
+export const { login, logout, session,GetimageAll } = authSlice.actions;
 
 export default authSlice.reducer;

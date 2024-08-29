@@ -5,6 +5,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import Header from './pages/Header'
+import BlogPost from './pages/BlogPost'
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path='/register' element={<Register/>} />
           <Route path='/dashboard' element={<Dashboard/>} />
           <Route path='/login' element={<Login/>} />
+          <Route path = '/addblog' element={<BlogPost/>}/>
         </Routes>
      
     </>
